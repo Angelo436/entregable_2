@@ -35,7 +35,7 @@ class EstudianteProvider extends ChangeNotifier {
 
     estudiante.id = id;
 
-    estudiante.add(estudiante);
+    this.estudiante.add(estudiante);
 
     notifyListeners();
   }

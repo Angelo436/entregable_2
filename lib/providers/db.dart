@@ -9,7 +9,7 @@ import '../models/estudiante_model.dart';
 
 class DBProvider {
   static Database? _database;
-  static final DBProvider db = DBProvider._()!;
+  static final DBProvider db = DBProvider._();
 
   DBProvider._();
 
@@ -35,7 +35,7 @@ class DBProvider {
       onCreate: (db, version) async {
         await db.execute('''
           CREATE TABLE estudiante(
-            id INTEGER PRIAMERY KEY,
+            id INTEGER PRIMERY KEY,
             nombre TEXT,
             apellido TEXT,
             edad INTEGER
@@ -68,17 +68,6 @@ class DBProvider {
     final int res = await db.insert("estudiante", estudiante.toJson());
 
     return res;
-  }
-
-  //Obtener un registro por id
-  Future<Estudiante?> getEstudianteById(int id) async {
-    final Database db = await database;
-
-    //usando Query para construir la consulta, con where y argumentos posicionales (whereArgs)
-    final res = await db.query('estudiante', where: 'id = ?', whereArgs: [id]);
-    print(res);
-    //Preguntamos si trae algun dato. Si lo hace
-    return res.isNotEmpty ? Estudiante.fromJson(res.first) : null;
   }
 
   Future<List<Estudiante>> getAllEstudiantes() async {

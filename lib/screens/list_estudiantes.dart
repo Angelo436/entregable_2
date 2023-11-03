@@ -3,19 +3,63 @@ import 'package:notes_crud_local_app/providers/actual_option.dart';
 import 'package:provider/provider.dart';
 
 import '../providers/estudiante.dart';
+import '../models/estudiante_model.dart';
 
-class ListNotesScreen extends StatelessWidget {
-  const ListNotesScreen({Key? key}) : super(key: key);
+class ListEstudianteScreen extends StatelessWidget {
+  const ListEstudianteScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return _ListNotes();
+    return _ListEstudiante();
   }
 }
 
-class _ListNotes extends StatelessWidget {
+class _ListEstudiante extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    EstudianteProvider estudianteProvider =
+        Provider.of<EstudianteProvider>(context);
+
+    final columns = ['ID', 'Nombre', 'Apellido', 'Edad'];
+
+    final estudiante = estudianteProvider.estudiante;
+
+    return DataTable(
+      columns: getColumns(columns),
+      rows: getRows(estudianteProvider),
+    );
+  }
+
+  List<DataColumn> getColumns(List<String> columns) => columns
+      .map((String column) => DataColumn(
+            label: Text(column),
+          ))
+      .toList();
+
+  List<DataRow> getRows(EstudianteProvider estudiantes) =>
+      estudiantes.estudiante.map((Estudiante estudiante) {
+        final cells = [
+          estudiante.id,
+          estudiante.nombre,
+          estudiante.apellido,
+          estudiante.edad
+        ];
+        return DataRow(
+          cells: getCells(cells),
+          onLongPress: () {
+            estudiantes.deleteEstudianteById(estudiante.id!);
+          },
+        );
+      }).toList();
+
+  List<DataCell> getCells(List<dynamic> cells) => cells
+      .map((data) => DataCell(
+            Text('$data'),
+          ))
+      .toList();
+
   void displayDialog(
-      BuildContext context, EstudianteProvider notesProvider, int id) {
+      BuildContext context, EstudianteProvider estudianteProvider, int id) {
     showDialog(
         barrierDismissible: false,
         context: context,
@@ -38,46 +82,12 @@ class _ListNotes extends StatelessWidget {
                   child: const Text('Cancelar')),
               TextButton(
                   onPressed: () {
-                    notesProvider.deleteEstudianteById(id);
+                    estudianteProvider.deleteEstudianteById(id);
                     Navigator.pop(context);
                   },
                   child: const Text('Ok')),
             ],
           );
         });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    EstudianteProvider notesProvider = Provider.of<EstudianteProvider>(context);
-
-    final notes = notesProvider.estudiante;
-
-    return ListView.builder(
-      itemCount: notes.length,
-      itemBuilder: (_, index) => ListTile(
-        leading: const Icon(Icons.note),
-        title: Text(notes[index].nombre),
-        subtitle: Text(notes[index].id.toString()),
-        trailing: PopupMenuButton(
-          // icon: Icon(Icons.fire_extinguisher),
-          onSelected: (int i) {
-            if (i == 0) {
-              notesProvider.createOrUpdate = "update";
-              notesProvider.assignDataWithEstudiante(notes[index]);
-              Provider.of<ActualOptionProvider>(context, listen: false)
-                  .selectedOption = 1;
-              return;
-            }
-
-            displayDialog(context, notesProvider, notes[index].id!);
-          },
-          itemBuilder: (context) => [
-            const PopupMenuItem(value: 0, child: Text('Actualizar')),
-            const PopupMenuItem(value: 1, child: Text('Eliminar'))
-          ],
-        ),
-      ),
-    );
   }
 }

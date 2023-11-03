@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 
-import 'package:notes_crud_local_app/providers/estudiante.dart';
 import 'package:notes_crud_local_app/screens/create_estudiante.dart';
 import 'package:notes_crud_local_app/screens/list_estudiantes.dart';
 import 'package:provider/provider.dart';
 
+import '../providers/estudiante.dart';
 import '../providers/actual_option.dart';
 import '../widgets/custom_navigationbar.dart';
 
@@ -15,7 +15,8 @@ class HomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: const Center(child: Text("Home Notas")),
+          title: const Center(child: Text("Estudiantes")),
+          backgroundColor: Colors.greenAccent,
         ),
         body: _HomeScreenBody(),
         bottomNavigationBar: const CustomNavigatorBar());
@@ -32,11 +33,11 @@ class _HomeScreenBody extends StatelessWidget {
 
     switch (selectedOption) {
       case 0:
-        return const ListNotesScreen();
+        return const ListEstudianteScreen();
       case 1:
-        return const CreateNoteScreen();
+        return const CreateEstudianteScreen();
       default:
-        return const ListNotesScreen();
+        return const ListEstudianteScreen();
     }
   }
 }

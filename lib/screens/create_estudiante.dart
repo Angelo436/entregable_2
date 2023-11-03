@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:entregable_2/providers/actual_option.dart';
 import 'package:provider/provider.dart';
 
+import '../providers/actual_option.dart';
 import '../providers/estudiante.dart';
 
-class CreateNoteScreen extends StatelessWidget {
-  const CreateNoteScreen({Key? key}) : super(key: key);
+class CreateEstudianteScreen extends StatelessWidget {
+  const CreateEstudianteScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -18,40 +18,55 @@ class _CreateForm extends StatelessWidget {
   Widget build(BuildContext context) {
     final EstudianteProvider estudianteProvider =
         Provider.of<EstudianteProvider>(context);
+
     final ActualOptionProvider actualOptionProvider =
         Provider.of<ActualOptionProvider>(context, listen: false);
+
     return Form(
       key: estudianteProvider.formKey,
       autovalidateMode: AutovalidateMode.onUserInteraction,
       child: Column(
         children: [
-          TextFormField(
-            autocorrect: false,
-            keyboardType: TextInputType.emailAddress,
-            initialValue: estudianteProvider.nombre,
-            decoration: const InputDecoration(
-                hintText: 'Construir Apps',
-                labelText: 'Titulo',
-                contentPadding:
-                    EdgeInsets.symmetric(vertical: 8, horizontal: 8)),
-            onChanged: (value) => estudianteProvider.nombre = value,
-            validator: (value) {
-              return value != '' ? null : 'El campo no debe estar vacío';
-            },
-          ),
           const SizedBox(height: 30),
           TextFormField(
-            maxLines: 10,
             autocorrect: false,
-            initialValue: estudianteProvider.apellido,
-            // keyboardType: TextInputType.emailAddress,
-            decoration: const InputDecoration(
-              hintText: 'Aprender sobre Dart...',
-              labelText: 'Descripción',
-            ),
-            onChanged: (value) => estudianteProvider.apellido = value,
+            keyboardType: TextInputType.name,
+            decoration: const InputDecoration(labelText: "Ingrese el nombre"),
+            onSaved: (value) {
+              estudianteProvider.nombre = value!;
+            },
             validator: (value) {
-              return (value != null) ? null : 'El campo no puede estar vacío';
+              if (value!.isEmpty) {
+                return 'El campo no puede estar vacío';
+              }
+            },
+          ),
+          TextFormField(
+            autocorrect: false,
+            keyboardType: TextInputType.name,
+            decoration: const InputDecoration(labelText: "Ingrese el apellido"),
+            onSaved: (newValue) {
+              estudianteProvider.apellido = newValue!;
+            },
+            validator: (value) {
+              if (value!.isEmpty) {
+                return 'El campo no puede estar vacío';
+              }
+            },
+          ),
+          TextFormField(
+            autocorrect: false,
+            keyboardType: TextInputType.number,
+            decoration: const InputDecoration(labelText: "Ingrese su edad"),
+            onSaved: (newValue) {
+              if (newValue != null) {
+                estudianteProvider.edad = int.tryParse(newValue)!;
+              }
+            },
+            validator: (value) {
+              if (value!.isEmpty) {
+                return 'El campo no puede estar vacío';
+              }
             },
           ),
           const SizedBox(height: 30),
@@ -60,7 +75,7 @@ class _CreateForm extends StatelessWidget {
                 RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
             disabledColor: Colors.grey,
             elevation: 0,
-            color: Colors.deepPurple,
+            color: Colors.greenAccent,
             onPressed: estudianteProvider.isLoading
                 ? null
                 : () {
@@ -71,6 +86,7 @@ class _CreateForm extends StatelessWidget {
 
                     if (estudianteProvider.createOrUpdate == 'create') {
                       estudianteProvider.addEstudiante();
+                      estudianteProvider.loadEstudiante();
                     } else {
                       estudianteProvider.updateEstudiante();
                     }

@@ -25,9 +25,10 @@ class CustomNavigatorBar extends StatelessWidget {
       },
       //Items
       items: const <BottomNavigationBarItem>[
-        BottomNavigationBarItem(icon: Icon(Icons.list), label: "Listar Notas"),
         BottomNavigationBarItem(
-            icon: Icon(Icons.post_add_rounded), label: "Crear Nota")
+            icon: Icon(Icons.groups), label: "Lista estudiantes"),
+        BottomNavigationBarItem(
+            icon: Icon(Icons.person_add), label: "Agregar estudiante"),
       ],
     );
   }
